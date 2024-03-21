@@ -6,54 +6,32 @@
         <meta charset="utf-8" />
         <title>Task 7</title>
 
-        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 
-        <style>
-            option[value='before'] {
-                color: green;
-            }
-
-            option[value='after'] {
-                color: green;
-            }
-        </style>
     </head>
 
     <body>
         <script type="application/javascript">
-            $(document).ready(function() {
-                function createFamilyTree() {
-                    $('body').append('<table></table>');
-                    $('table').append('<thead></thead>', '<tbody></tbody>');
-                    const row = $('<tr></tr>').append($('<th></th>').text('Firstname'), $('<th></th>').text('Lastname'));
-                    $('thead').append(row);
-                }
+            function createSearchForm() {
+                $('body').append("<input type='text' id='search'></input>", "<input type='submit' id='submit-btn'></input>", "<ul></ul>");
+                $('#submit-btn').click(function() {
+                    const query = $('#search').val();
+                    queryWikipedia(query);
+                });
+            }
+            function addNewArticle (id, title, snippet) {
+                $('ul').append('<li></li>');
+                $('ul > li:last').append(`<p><span>${id} - <b>${title}</b></span></p>`, `<p>${snippet}</p>`);
+            }
 
-                createFamilyTree();
-                function addNewMember(firstName, lastName, position) {
-                    const row = $('<tr></tr>');
-                    const x = $('<td>(x)</td>');
-                    x.css('background-color', 'orange');
-                    x.click(function () {
-                        $(row).remove();
-                    });
-                    row.append(`<td>${firstName}</td>`, `<td>${lastName}</td>`, x);
-                    if (position == 'before') {
-                        $('tbody').prepend(row);
-                    } else {
-                        $('tbody').append(row);
-                    }
-                }
-                function createForm() {
-                    const form = "<form><input><input><select><option value='before' selected>Before</option><option value='after'>After</option></select><input type='submit' value='submit'></form>";
-                    $('body').append(form);
-                    $('form').submit(function(event) {
-                        event.preventDefault();
-                        addNewMember($('input:nth-of-type(1)').val(), $('input:nth-of-type(2)').val(), $('select').val());
-                    });
-                }
-                createForm();
-        });
+            function queryWikipedia(search) { $.get('https://en.wikipedia.org/w/api.php', {
+                action: 'query', list: 'search', srsearch: search, format: 'json', origin: '*'}).done(function(data) {
+                    data.query.search.forEach(function(item) {
+                        addNewArticle(item.pageid, item.title, item.snippet);
+                    })
+                })
+            }
+            $(document).ready(createSearchForm);
         </script>
 
     </body>
