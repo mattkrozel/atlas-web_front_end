@@ -16,11 +16,14 @@
 
     <script>
         function setCookies() {
-
+            document.cookie = `firstname=${document.getElementById('firstname').value}`;
+            document.cookie = `email=${document.getElementById('email').value}`;
         }
 
         function showCookies() {
-            
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = `Cookies: ${document.cookie}`;
+            document.querySelector('body').append(paragraph);
         }
     </script>
   
